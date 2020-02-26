@@ -4,7 +4,6 @@ module.exports = class extends BaseGenerator {
   writing() {
     this.writeFiles({
       _gitignore: ".gitignore",
-      "version/_version.go": "version/version.go",
       "config/_config.go": "config/config.go",
       "config/_config_test.go": "config/config_test.go",
       "_default_app.json": "default_app.json"
@@ -15,6 +14,7 @@ module.exports = class extends BaseGenerator {
       _Makefile: "Makefile",
       "_README.md": "Readme.md",
       "_go.mod": "go.mod",
+      "version/_version.go": "version/version.go",
       "cmd/_version.go": "cmd/version.go",
       "cmd/_root.go": "cmd/root.go"
     });

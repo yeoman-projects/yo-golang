@@ -5,7 +5,7 @@
   "files": [
     "generators",
     "simple",
-    "cli",
+    "cli"
   ],
   "keywords": [
     "yeoman-generator",
