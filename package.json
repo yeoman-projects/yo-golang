@@ -1,12 +1,15 @@
 {
-  "name": "generator-golang-cli",
+  "name": "generator-golang-project",
   "version": "1.0.0",
-  "description": "Generator for a cli skeleton",
+  "description": "Generator for a project skeleton",
   "files": [
-    "generators"
+    "generators",
+    "simple",
+    "cli",
   ],
   "keywords": [
-    "yeoman-generator"
+    "yeoman-generator",
+    "golang"
   ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
