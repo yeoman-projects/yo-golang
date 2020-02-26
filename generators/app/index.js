@@ -2,13 +2,55 @@ const path = require("path");
 const Generator = require("yeoman-generator");
 const mkdir = require("mkdirp");
 
+const OPTIONS = {
+  appName: {
+    desc: "What is the name of your application?",
+    alias: "n",
+    default: "myapp"
+  },
+  version: {
+    desc: "What is the version of your application?",
+    alias: "v",
+    default: "0.0.1"
+  },
+  description: {
+    desc: "Your project description",
+    alias: "d",
+    default: "Your project description"
+  },
+  user: {
+    desc: "Your project user",
+    alias: "u",
+    default: process.env.USER
+  },
+  repo: {
+    desc: "Project repository",
+    alias: "r",
+    default: `github.com/${process.env.USER}`
+  }
+};
+
+const DEFAULT_OPTIONS = {
+  desc: "",
+  alias: "",
+  type: "string"
+};
+
+const isDefined = x => !!x;
+
 module.exports = class extends Generator {
   constructor(args, opts) {
     super(args, opts);
 
-    this.option("appName");
-    this.option("version");
-    this.option("description");
+    Object.keys(OPTIONS).forEach(key => {
+      const obj = OPTIONS[key];
+      this.option(key, {
+        ...DEFAULT_OPTIONS,
+        desc: obj["desc"],
+        alias: obj["alias"],
+        type: obj["type"]
+      });
+    });
   }
 
   paths() {
@@ -17,38 +59,29 @@ module.exports = class extends Generator {
 
   prompting() {
     this.log(`
-      +---------------------+
-      Go cli scaffold
-      +---------------------+
-      `);
++---------------------+
+Go cli scaffold
++---------------------+
+`);
 
     let cb = this.async();
 
-    let prompts = [
-      {
-        type: "input",
-        name: "appName",
-        message: "What is the name of your application?",
-        default: "myapp"
-      },
-      {
-        type: "input",
-        name: "version",
-        message: "Version",
-        default: "0.0.1"
-      },
-      {
-        type: "input",
-        name: "description",
-        message: "Description",
-        default: `Your project description`
-      }
-    ];
+    let prompts = Object.keys(OPTIONS).map(key => {
+      const obj = OPTIONS[key];
+      return Object.assign({}, DEFAULT_OPTIONS, {
+        type: obj["type"] || "input",
+        name: key,
+        message: obj["desc"],
+        default: obj["default"] || "",
+        alias: obj["alias"]
+      });
+    });
 
     return this.prompt(prompts).then(props => {
+      Object.keys(OPTIONS).forEach(key => {
+        this[key] = isDefined(props[key]) ? props[key] : this.options[key];
+      });
       this.appName = props.appName.replace(/\s+/g, "-").toLowerCase();
-      this.version = props.version;
-      this.description = props.description;
       cb();
     });
   }
@@ -56,7 +89,7 @@ module.exports = class extends Generator {
   writing() {
     console.log("Generating tree folders");
     let pkgDir = this.destinationPath("pkg");
-    let srcDir = this.destinationPath(path.join("src", this.appName));
+    let srcDir = this.destinationPath(path.join("src", this.repo));
     let binDir = this.destinationPath("bin");
 
     mkdir.sync(pkgDir);
@@ -66,7 +99,9 @@ module.exports = class extends Generator {
     let tmplContext = {
       appName: this.appName,
       version: this.version,
-      description: this.description
+      description: this.description,
+      user: this.user,
+      repo: this.repo
     };
 
     const files = {
