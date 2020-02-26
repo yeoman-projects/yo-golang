@@ -17,6 +17,7 @@
     "chalk": "^3.0.0",
     "mkdirp": "^1.0.3",
     "yeoman-generator": "^4.5.0",
+    "yo-option-or-prompt": "^0.2.0",
     "yosay": "^2.0.2"
   }
 }

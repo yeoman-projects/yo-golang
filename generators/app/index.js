@@ -2,13 +2,15 @@ const path = require("path");
 const Generator = require("yeoman-generator");
 const mkdir = require("mkdirp");
 const chalk = require("chalk");
+const yoOptionOrPrompt = require("yo-option-or-prompt").default;
 const yosay = require("yosay");
 
 const OPTIONS = {
   appName: {
     desc: "What is the name of your application?",
     alias: "n",
-    default: "myapp"
+    default: "myapp",
+    optionType: String
   },
   version: {
     desc: "What is the version of your application?",
@@ -35,7 +37,8 @@ const OPTIONS = {
 const DEFAULT_OPTIONS = {
   desc: "",
   alias: "",
-  type: "string"
+  type: "input",
+  optionType: String
 };
 
 const isDefined = x => !!x;
@@ -46,12 +49,14 @@ module.exports = class extends Generator {
 
     Object.keys(OPTIONS).forEach(key => {
       const obj = OPTIONS[key];
-      this.option(key, {
+      const optionOpts = {
         ...DEFAULT_OPTIONS,
+        name: key,
         desc: obj["desc"],
         alias: obj["alias"],
-        type: obj["type"]
-      });
+        type: obj["optionType"]
+      };
+      this.option(key, optionOpts);
     });
   }
 
@@ -59,7 +64,9 @@ module.exports = class extends Generator {
     this.destinationRoot(process.env.GOPATH || "./");
   }
 
-  initializing() {}
+  initializing() {
+    this.optionOrPrompt = yoOptionOrPrompt;
+  }
 
   install() {}
 
@@ -76,27 +83,27 @@ Go cli scaffold
 
     let prompts = Object.keys(OPTIONS).map(key => {
       const obj = OPTIONS[key];
-      return Object.assign({}, DEFAULT_OPTIONS, {
-        type: obj["type"] || "input",
+      return {
         name: key,
+        type: obj["type"] || "input",
         message: obj["desc"],
         default: obj["default"] || "",
         alias: obj["alias"]
-      });
+      };
     });
 
-    return this.prompt(prompts).then(props => {
+    return this.optionOrPrompt(prompts).then(props => {
       Object.keys(OPTIONS).forEach(key => {
         this[key] = isDefined(props[key]) ? props[key] : this.options[key];
       });
-      this.appName = props.appName.replace(/\s+/g, "-").toLowerCase();
+      this.appName = this["appName"].replace(/\s+/g, "-").toLowerCase();
       this.appPath = path.join(this.appPath, this.appName);
       cb();
     });
   }
 
   writing() {
-    console.log("Generating tree folders");
+    this.log("Generating tree folders");
     let pkgDir = this.destinationPath("pkg");
     let srcDir = this.destinationPath(path.join("src", this.appPath));
     let binDir = this.destinationPath("bin");
