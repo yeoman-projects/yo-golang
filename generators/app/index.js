@@ -42,6 +42,14 @@ module.exports = class extends Generator {
   constructor(args, opts) {
     super(args, opts);
 
+    this.composeWith(
+      "git-init",
+      {},
+      {
+        local: require.resolve("generator-git-init")
+      }
+    );
+
     Object.keys(OPTIONS).forEach(key => {
       const obj = OPTIONS[key];
       this.option(key, {
@@ -89,7 +97,9 @@ Go cli scaffold
   writing() {
     console.log("Generating tree folders");
     let pkgDir = this.destinationPath("pkg");
-    let srcDir = this.destinationPath(path.join("src", this.repo));
+    let srcDir = this.destinationPath(
+      path.join("src", this.repo, this.appName)
+    );
     let binDir = this.destinationPath("bin");
 
     mkdir.sync(pkgDir);
@@ -129,22 +139,11 @@ Go cli scaffold
     });
 
     Object.keys(templates).forEach(filename => {
-      this.fs.copy(
+      this.fs.copyTpl(
         this.templatePath(filename),
         path.join(srcDir, templates[filename]),
         tmplContext
       );
     });
-
-    // this.fs.copy(
-    //   this.templatePath("_gitignore"),
-    //   path.join(srcDir, ".gitignore")
-    // );
-
-    // this.fs.copyTpl(
-    //   this.templatePath("_main.go"),
-    //   path.join(srcDir, "main.go"),
-    //   tmplContext
-    // );
   }
 };
