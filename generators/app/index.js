@@ -1,6 +1,8 @@
 const path = require("path");
 const Generator = require("yeoman-generator");
 const mkdir = require("mkdirp");
+const chalk = require("chalk");
+const yosay = require("yosay");
 
 const OPTIONS = {
   appName: {
@@ -23,10 +25,10 @@ const OPTIONS = {
     alias: "u",
     default: process.env.USER
   },
-  repo: {
-    desc: "Project repository",
+  appPath: {
+    desc: "What is the root path for your project (ex: github.com/auser)",
     alias: "r",
-    default: `github.com/${process.env.USER}`
+    default: path.join("github.com", process.env.USER)
   }
 };
 
@@ -41,14 +43,6 @@ const isDefined = x => !!x;
 module.exports = class extends Generator {
   constructor(args, opts) {
     super(args, opts);
-
-    this.composeWith(
-      "git-init",
-      {},
-      {
-        local: require.resolve("generator-git-init")
-      }
-    );
 
     Object.keys(OPTIONS).forEach(key => {
       const obj = OPTIONS[key];
@@ -65,12 +59,18 @@ module.exports = class extends Generator {
     this.destinationRoot(process.env.GOPATH || "./");
   }
 
+  initializing() {}
+
+  install() {}
+
   prompting() {
-    this.log(`
+    this.log(
+      chalk.hex("#6fd6e3").bold(`
 +---------------------+
 Go cli scaffold
 +---------------------+
-`);
+`)
+    );
 
     let cb = this.async();
 
@@ -90,6 +90,7 @@ Go cli scaffold
         this[key] = isDefined(props[key]) ? props[key] : this.options[key];
       });
       this.appName = props.appName.replace(/\s+/g, "-").toLowerCase();
+      this.appPath = path.join(this.appPath, this.appName);
       cb();
     });
   }
@@ -97,14 +98,15 @@ Go cli scaffold
   writing() {
     console.log("Generating tree folders");
     let pkgDir = this.destinationPath("pkg");
-    let srcDir = this.destinationPath(
-      path.join("src", this.repo, this.appName)
-    );
+    let srcDir = this.destinationPath(path.join("src", this.appPath));
     let binDir = this.destinationPath("bin");
 
     mkdir.sync(pkgDir);
     mkdir.sync(srcDir);
     mkdir.sync(binDir);
+
+    // For later
+    this.srcDir = srcDir;
 
     let tmplContext = {
       appName: this.appName,
@@ -145,5 +147,17 @@ Go cli scaffold
         tmplContext
       );
     });
+  }
+
+  end() {
+    const opts = { cwd: this.srcDir };
+    this.log(`Getting dependencies`);
+    this.spawnCommandSync("make", ["get-deps"], opts);
+
+    this.log("Initializing git repository");
+    this.spawnCommandSync("git", ["init", "--quiet"], opts);
+    this.log("Adding all files");
+    this.spawnCommandSync("git", ["add", "--all"], opts);
+    this.spawnCommandSync("git", ["commit", "-am", "initial commit"], opts);
   }
 };

@@ -14,8 +14,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "generator-git-init": "^1.1.3",
+    "chalk": "^3.0.0",
     "mkdirp": "^1.0.3",
-    "yeoman-generator": "^4.5.0"
+    "yeoman-generator": "^4.5.0",
+    "yosay": "^2.0.2"
   }
 }
