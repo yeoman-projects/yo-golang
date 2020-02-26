@@ -1,5 +1,5 @@
 {
-  "name": "generate-golang-cli",
+  "name": "generator-golang-cli",
   "version": "1.0.0",
   "description": "Generator for a cli skeleton",
   "files": [

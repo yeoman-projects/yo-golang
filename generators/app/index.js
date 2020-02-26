@@ -3,12 +3,20 @@ const Generator = require("yeoman-generator");
 const mkdir = require("mkdirp");
 
 module.exports = class extends Generator {
+  constructor(args, opts) {
+    super(args, opts);
+
+    this.option("appName");
+    this.option("version");
+    this.option("description");
+  }
+
   paths() {
     this.destinationRoot(process.env.GOPATH || "./");
   }
 
   prompting() {
-    console.log(`
+    this.log(`
       +---------------------+
       Go cli scaffold
       +---------------------+
