@@ -1,7 +1,7 @@
 {
   "name": "generator-golang-project",
   "version": "1.0.0",
-  "description": "Generator for a project skeleton",
+  "description": "A Yeoman generator for a golang project skeleton",
   "files": [
     "generators",
     "simple",
@@ -9,18 +9,74 @@
   ],
   "keywords": [
     "yeoman-generator",
-    "golang"
+    "golang",
+    "go",
+    "yeoman",
+    "scaffold",
+    "generator"
   ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "prepare": "yarn audit",
+    "prepublishOnly": "yarn audit",
+    "pretest": "eslint .",
+    "precommit": "lint-staged",
+    "test": "jest"
   },
-  "author": "",
-  "license": "ISC",
+  "author": {
+    "name": "Ari Lerner",
+    "email": "me@ari.io",
+    "url": "https://ari.io"
+  },
+  "license": "MIT",
+  "jest": {
+    "testEnvironment": "node"
+  },
+  "lint-staged": {
+    "*.js": [
+      "eslint --fix",
+      "git add"
+    ]
+  },
+  "eslintConfig": {
+    "extends": [
+      "xo",
+      "prettier"
+    ],
+    "env": {
+      "jest": true,
+      "node": true
+    },
+    "rules": {
+      "prettier/prettier": [
+        "error",
+        {
+          "singleQuote": true,
+          "printWidth": 80
+        }
+      ]
+    },
+    "plugins": [
+      "prettier"
+    ]
+  },
   "dependencies": {
     "chalk": "^3.0.0",
     "mkdirp": "^1.0.3",
     "yeoman-generator": "^4.5.0",
     "yo-option-or-prompt": "^0.2.0",
     "yosay": "^2.0.2"
+  },
+  "devDependencies": {
+    "coveralls": "^3.0.9",
+    "eslint": "^6.8.0",
+    "eslint-config-prettier": "^6.10.0",
+    "eslint-config-xo": "^0.29.1",
+    "eslint-plugin-prettier": "^3.1.2",
+    "husky": "^4.2.3",
+    "jest": "^25.1.0",
+    "lint-staged": "^10.0.8",
+    "prettier": "^1.19.1",
+    "yeoman-assert": "^3.1.1",
+    "yeoman-test": "^2.2.0"
   }
 }
