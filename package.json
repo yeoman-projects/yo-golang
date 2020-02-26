@@ -1,0 +1,20 @@
+{
+  "name": "generate-golang-cli",
+  "version": "1.0.0",
+  "description": "Generator for a cli skeleton",
+  "files": [
+    "generators"
+  ],
+  "keywords": [
+    "yeoman-generator"
+  ],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "mkdirp": "^1.0.3",
+    "yeoman-generator": "^4.5.0"
+  }
+}
