@@ -1,5 +1,5 @@
-GO      = go
-DEP 	= dep
+GO      = $(shell which go)
+DEP 	= $(shell which dep)
 TIMEOUT = 15
 V = 0
 Q = $(if $(filter 1,$V),,@)
