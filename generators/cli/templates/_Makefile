@@ -22,7 +22,7 @@ BUILD_DATE=$(shell date '+%Y-%m-%d-%H:%M:%S')
 IMAGE_NAME := "${USER}/${MODULE}"
 BIN      = $(CURDIR)/bin
 
-
+.DEFAULT_GOAL := build
 
 .PHONY: all
 all: fmt lint | $(BIN) ; $(info $(M) building executable…) @ ## Build program binary
