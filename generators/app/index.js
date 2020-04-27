@@ -64,7 +64,9 @@ module.exports = class extends Generator {
     super(args, opts)
 
     Object.keys(opts).forEach(key => {
-      this.config.set(key, opts[key])
+      if (key !== "env") {
+        this.config.set(key, opts[key])
+      }
     })
 
     this.config.save()
