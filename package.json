@@ -1,6 +1,6 @@
 {
   "name": "generator-golang-project",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "A Yeoman generator for a golang project skeleton",
   "repository": "https://github.com/auser/yogolang",
   "main": "generators/app/index.js",
